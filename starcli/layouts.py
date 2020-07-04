@@ -8,8 +8,29 @@ from rich.console import Console
 from rich.table import Table
 import click
 import colorama
+import emoji
 
 from .terminal_size import terminal_size
+
+
+all_colors = (
+    "black",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "magenta",
+    "cyan",
+    "white",
+    "bright_black",
+    "bright_red",
+    "bright_green",
+    "bright_yellow",
+    "bright_blue",
+    "bright_magenta",
+    "bright_cyan",
+    "bright_white",
+)
 
 
 def list_layout(repos):
@@ -31,11 +52,11 @@ def list_layout(repos):
 
         stats = (
             str(repo["stargazers_count"])
-            + ":star:, "
+            + emoji.emojize(":star:")
             + str(repo["forks_count"])
             + ":fork_and_knife:, "
             + str(repo["watchers_count"])
-            + ":eyes:"
+            + emoji.emojize(":+1:")
         )
 
         if len(repo["full_name"] + stats) > len(separator + "   "):

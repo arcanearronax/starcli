@@ -1,3 +1,4 @@
 Click>=7.0
+emoji>=0.5.4
 requests>=2.22.0
 rich>=2.1.0
