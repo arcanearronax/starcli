@@ -13,26 +13,6 @@ import emoji
 from .terminal_size import terminal_size
 
 
-all_colors = (
-    "black",
-    "red",
-    "green",
-    "yellow",
-    "blue",
-    "magenta",
-    "cyan",
-    "white",
-    "bright_black",
-    "bright_red",
-    "bright_green",
-    "bright_yellow",
-    "bright_blue",
-    "bright_magenta",
-    "bright_cyan",
-    "bright_white",
-)
-
-
 def list_layout(repos):
     """ Displays repositories in list layout using rich """
 
@@ -52,25 +32,27 @@ def list_layout(repos):
 
         stats = (
             str(repo["stargazers_count"])
-            + emoji.emojize(":star:")
+            + "s, "
             + str(repo["forks_count"])
-            + ":fork_and_knife:, "
+            + "f, "
             + str(repo["watchers_count"])
-            + emoji.emojize(":+1:")
+            + "w"
         )
+        stats_len = len(stats)
 
-        if len(repo["full_name"] + stats) > len(separator + "   "):
-            print()
-            click.echo(
-                click.style(
-                    " " * ((side_width) + (len(separator) - len(stats)))
-                    + stats
-                    + "\n\n",
-                    fg="blue",
-                )
+        stats = stats.replace("s", ":sparkles:")
+        stats = stats.replace("f", ":fork_and_knife:")
+        stats = stats.replace("w", ":eyes:")
+
+        if len(repo["full_name"]) + stats_len > len(separator + "   "):
+            print(colorama.Fore.BLUE)
+            print(
+                emoji.emojize(
+                    " " * ((side_width) + (len(separator) - stats_len)) + stats + "\n\n"
+                ),
             )
         else:
-            click.echo(click.style(stats + "\n\n", fg="blue"))
+            print(colorama.Fore.BLUE, emoji.emojize(stats) + "\n\n")
 
         console.print(" " * side_width, repo["language"], style="bold cyan", end="\n\n")
         console.print(
