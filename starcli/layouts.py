@@ -2,6 +2,7 @@
 
 # Standard library imports
 import textwrap
+from shutil import get_terminal_size
 
 # Third party imports
 from rich.console import Console
@@ -10,15 +11,13 @@ import click
 import colorama
 import emoji
 
-from .terminal_size import terminal_size
-
 
 def list_layout(repos):
     """ Displays repositories in list layout using rich """
 
     console = Console()  # initialise rich
     separator = "+==============================================================+"
-    term_width, _ = terminal_size()
+    term_width = get_terminal_size().columns
     side_width = int((term_width - len(separator)) / 2)
 
     console.print(separator, justify="center", end="\n\n")
