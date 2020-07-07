@@ -4,6 +4,7 @@
 ⭐stars⭐
 *from your command line!* 💻
 
+
 ![checks](https://github.com/hedythedev/starcli/workflows/checks/badge.svg)
 [![pypi version](https://img.shields.io/pypi/v/starcli)](https://pypi.org/project/starcli/)
 [![pypi downloads per month](https://img.shields.io/pypi/dm/starcli)](https://pypi.org/project/starcli/)
@@ -72,6 +73,30 @@ Remember that all contributions to this project should follow its
 * HTTP library to send requests: [`requests`](https://github.com/psf/requests)
 
 
+
+
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Shagilton"><img src="https://avatars0.githubusercontent.com/u/21122143?v=4" width="100px;" alt=""/><br /><sub><b>Shagilton</b></sub></a><br /><a href="https://github.com/hedythedev/starcli/commits?author=Shagilton" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/hexbee"><img src="https://avatars2.githubusercontent.com/u/26668583?v=4" width="100px;" alt=""/><br /><sub><b>hexbee</b></sub></a><br /><a href="https://github.com/hedythedev/starcli/issues?q=author%3Ahexbee" title="Bug reports">🐛</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+
 ## Credits
 
 This project was forked from
@@ -80,3 +105,8 @@ made by [Srinivasa Rao](https://github.com/SriNandan33), which
 in turn, is inspired by
 [`githunt` (the JavaScript Web App)](https://github.com/kamranahmedse/githunt).
 
+
+
+---
+
+Liked this project? Don't forget to give it a ⭐

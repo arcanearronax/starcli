@@ -1,0 +1,33 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Shagilton",
+      "name": "Shagilton",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/21122143?v=4",
+      "profile": "https://github.com/Shagilton",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hexbee",
+      "name": "hexbee",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26668583?v=4",
+      "profile": "https://github.com/hexbee",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "starcli",
+  "projectOwner": "hedythedev",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
