@@ -296,16 +296,13 @@ def get_star_created_dates(user, repo, auth="", sort="created_at", direction="as
     star_dates = [] # list of dates when stars were created
     while True: # Rely on the next page link to get subsequent pages
 
-        # Request the page and determine if a next link is present
         request = get_valid_request(url, auth, headers={"Accept": "application/vnd.github.v3.star+json"}) # Need this to get the star_created_date
-        #print(request.text)
 
         if request is None:  # Something bad happened here if this is used
             return None
 
         # Now we need to pull info from the response
         for star_data in request.json():
-            #   print(star_data)
             star_dates.append(datetime.strptime(star_data["starred_at"], "%Y-%m-%dT%H:%M:%SZ").date())
 
         # Get the next page url or exit

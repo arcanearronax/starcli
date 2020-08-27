@@ -214,16 +214,11 @@ def graph_layout(star_dates):
         upper_date = min_date + ((i + 1) * date_delta)
 
         star_arr = [x for x in star_dates if (x >= lower_date and x < upper_date)]
-        print('Upper: {}\tLower: {}\tDelta: {}'.format(upper_date, lower_date, date_delta))
-        print("star_arr: {}".format(star_arr))
 
         star_counts.append(
             len(
                 star_arr
             ) + star_counts[i - 1]
         )
-
-    # Hopefully this has built a summation of the star counts for each column
-    print(star_counts)
 
     plot([x for x in range(0, col_count)], star_counts, row_count, col_count)
