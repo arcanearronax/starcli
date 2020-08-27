@@ -3,13 +3,14 @@
 import click
 import re
 
-from .layouts import list_layout, table_layout, grid_layout, shorten_count
+from .layouts import list_layout, table_layout, grid_layout, graph_layout, shorten_count
 from .search import (
     search,
     debug_requests_on,
     search_github_trending,
     search_error,
     status_actions,
+    get_star_created_dates,
 )
 
 
@@ -87,6 +88,11 @@ from .search import (
     help="Search for trending repositories by username",
 )
 @click.option(
+    "--graph",
+    type=str,
+    help="Enter the user name and repo name of the chart to see (must use the format user_name/repo_name)."
+)
+@click.option(
     "--auth",
     type=str,
     default="",
@@ -106,6 +112,7 @@ def cli(
     long_stats,
     date_range,
     user,
+    graph,
     debug=False,
     auth="",
 ):
@@ -126,41 +133,60 @@ def cli(
         )
         auth = None
 
-    if (
-        not spoken_language and not date_range
-    ):  # if filtering by spoken language and date range not required
-        tmp_repos = search(
-            lang, created, pushed, stars, topic, user, debug, order, auth
-        )
-    else:
-        tmp_repos = search_github_trending(
-            lang, spoken_language, order, stars, date_range
-        )
+    if graph:
+        if not re.search(".\/.", graph): # Verify we have a properly formatted graph arg
+            click.secho(
+                f"Invalid repository name format: {graph} must be 'username/repo_name'",
+                fg="bright_red"
+            )
+            return # Need to exit since we can't progress further
+        else: # We have a properly formatted graph arg
 
-    if not tmp_repos:  # if search() returned None
-        return
-    repos = tmp_repos[0:limit_results]
+            user_repo_list = graph.split("/")
+            tmp_repos = get_star_created_dates(user=user_repo_list[0],repo=user_repo_list[1], auth=auth)
 
-    if not long_stats:  # shorten the stat counts when not --long-stats
-        for repo in repos:
-            repo["stargazers_count"] = shorten_count(repo["stargazers_count"])
-            repo["forks_count"] = shorten_count(repo["forks_count"])
-            repo["watchers_count"] = shorten_count(repo["watchers_count"])
-            if "date_range" in repo.keys() and repo["date_range"]:
-                num_stars = repo["date_range"].split()[0]
-                repo["date_range"] = repo["date_range"].replace(
-                    num_stars, str(shorten_count(int(num_stars.replace(",", ""))))
-                )
+            if not tmp_repos: # Return if we get no data
+                return
 
-    if layout == "table":
-        table_layout(repos)
-        return
+            # Need to process data for a layout
+            graph_layout(tmp_repos)
 
-    if layout == "grid":
-        grid_layout(repos)
-        return
+    else: # We need to get and process tmp_repos for layouts
+        if ( # Use the API to request data
+            not spoken_language and not date_range
+        ):  # if filtering by spoken language and date range not required
+            tmp_repos = search(
+                lang, created, pushed, stars, topic, user, debug, order, auth
+            )
+        else: # Use bs4 to scrape webpages
+            tmp_repos = search_github_trending(
+                lang, spoken_language, order, stars, date_range
+            )
 
-    list_layout(repos)  # if layout isn't a grid or table, then use list.
+        if not tmp_repos:  # if search() returned None
+            return
+        repos = tmp_repos[0:limit_results]
+
+        if not long_stats:  # shorten the stat counts when not --long-stats
+            for repo in repos:
+                repo["stargazers_count"] = shorten_count(repo["stargazers_count"])
+                repo["forks_count"] = shorten_count(repo["forks_count"])
+                repo["watchers_count"] = shorten_count(repo["watchers_count"])
+                if "date_range" in repo.keys() and repo["date_range"]:
+                    num_stars = repo["date_range"].split()[0]
+                    repo["date_range"] = repo["date_range"].replace(
+                        num_stars, str(shorten_count(int(num_stars.replace(",", ""))))
+                    )
+
+        if layout == "table":
+            table_layout(repos)
+            return
+
+        if layout == "grid":
+            grid_layout(repos)
+            return
+
+        list_layout(repos)  # if layout isn't a grid or table, then use list.
 
 
 if __name__ == "__main__":

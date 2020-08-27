@@ -3,7 +3,9 @@
 # Standard library imports
 import textwrap
 import math
+import os
 from shutil import get_terminal_size
+from datetime import datetime
 
 # Third party imports
 from rich.align import Align
@@ -13,6 +15,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.panel import Panel
 from rich.columns import Columns
+from terminalplot import plot, get_terminal_size
 
 
 def shorten_count(number):
@@ -174,3 +177,53 @@ def grid_layout(repos):
 
     console = Console()
     console.print((Columns(panels, width=30, expand=True)))
+
+def graph_layout(star_dates):
+    """
+    This displays a graph of repository star gazers over time.
+    """
+
+    # I'm going to take a more basic approach for this initially
+    min_date = star_dates[0]
+    max_date = datetime.now().date()
+
+    max_stars = len(star_dates)
+
+    # Now that we have our basic dates, get our star counts
+    min_stars = 0
+    star_delta = max_stars - min_stars
+    star_2 = min_stars + 1 * (star_delta / 3)
+    star_3 = min_stars + 2 * (star_delta / 3)
+
+    # Now we prep the table data
+
+    # Get our terminal size
+    row_count, col_count = get_terminal_size()
+
+    # How many days are in each column?
+    # Keep 3 rows and 6 columns reserved for meta data
+    date_delta = (max_date - min_date) / col_count
+
+    date_2 = min_date + 1 * (date_delta / 3)
+    date_3 = min_date + 2 * (date_delta / 3)
+
+    # This is a generator to get the numbmer of stars by each date
+    star_counts = [0]
+    for i in range(1, col_count):
+        lower_date = min_date + (i * date_delta)
+        upper_date = min_date + ((i + 1) * date_delta)
+
+        star_arr = [x for x in star_dates if (x >= lower_date and x < upper_date)]
+        print('Upper: {}\tLower: {}\tDelta: {}'.format(upper_date, lower_date, date_delta))
+        print("star_arr: {}".format(star_arr))
+
+        star_counts.append(
+            len(
+                star_arr
+            ) + star_counts[i - 1]
+        )
+
+    # Hopefully this has built a summation of the star counts for each column
+    print(star_counts)
+
+    plot([x for x in range(0, col_count)], star_counts, row_count, col_count)

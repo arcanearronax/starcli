@@ -14,6 +14,7 @@ import colorama
 from bs4 import BeautifulSoup
 
 API_URL = "https://api.github.com/search/repositories"
+API_URL_STAR = "https://api.github.com/repos"
 
 date_range_map = {"today": "daily", "this-week": "weekly", "this-month": "monthly"}
 
@@ -76,7 +77,7 @@ def get_date(date):
     return prefix + tmp_date.strftime("%Y-%m-%d")
 
 
-def get_valid_request(url, auth=""):
+def get_valid_request(url, auth="", headers=None):
     """
     Provide a URL to submit a GET request for and handle a connection error.
     """
@@ -85,7 +86,7 @@ def get_valid_request(url, auth=""):
             session = requests.Session()
             if auth:
                 session.auth = (auth.split(":")[0], auth.split(":")[1])
-            request = session.get(url)
+            request = session.get(url, headers=headers)
         except requests.exceptions.ConnectionError:
             secho("Internet connection error...", fg="bright_red")
             return None
@@ -284,3 +285,33 @@ def search_github_trending(
     if order == "asc":
         return sorted(repositories, key=lambda repo: repo["stargazers_count"])
     return sorted(repositories, key=lambda repo: repo["stargazers_count"], reverse=True)
+
+def get_star_created_dates(user, repo, auth="", sort="created_at", direction="ascending"):
+    """
+    This is used to retrieve stargazer data for repositories.
+    """
+
+    query = f"{user}/{repo}/stargazers" # We're going to consistently use this info
+    url = f"{API_URL_STAR}/{query}?sort={sort}&direction={direction}&page=1"
+    star_dates = [] # list of dates when stars were created
+    while True: # Rely on the next page link to get subsequent pages
+
+        # Request the page and determine if a next link is present
+        request = get_valid_request(url, auth, headers={"Accept": "application/vnd.github.v3.star+json"}) # Need this to get the star_created_date
+        #print(request.text)
+
+        if request is None:  # Something bad happened here if this is used
+            return None
+
+        # Now we need to pull info from the response
+        for star_data in request.json():
+            #   print(star_data)
+            star_dates.append(datetime.strptime(star_data["starred_at"], "%Y-%m-%dT%H:%M:%SZ").date())
+
+        # Get the next page url or exit
+        try: # An IndexError occurs if we don't get a next link
+            url = [link["url"] for link in requests.utils.parse_header_links(request.headers['link'].rstrip('>').replace('>,<', ',<')) if link["rel"] == "next"][0] # Get the next page's url
+        except IndexError:
+            break
+
+    return star_dates
